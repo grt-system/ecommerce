@@ -12,6 +12,7 @@ public class SellService {
     private SellRepository sellRepository;
 
     public Sell createSell(){
-
+        Sell vender = new Sell();
+    return vender;
     }
 }
