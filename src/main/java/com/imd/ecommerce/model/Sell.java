@@ -19,10 +19,10 @@ public class Sell {
     private Integer id;
 
     @Column(nullable = false)
-    private Product product;
+    private long productId;
 
     @Column(nullable = false)
-    private User user;
+    private long userId;
 
     @Column(nullable = false)
     private Boolean ft;
