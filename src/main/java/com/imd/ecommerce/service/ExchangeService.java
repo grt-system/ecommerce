@@ -1,13 +1,14 @@
 package com.imd.ecommerce.service;
 
 import com.imd.ecommerce.client.Exchange;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,12 +20,14 @@ public class ExchangeService {
     @Autowired
     private CacheManager cacheManager;
 
-    //@CircuitBreaker(name = "exchange", fallbackMethod = "useLastExchangeRate")
+    @Autowired private RedisTemplate<String, String> redisTemplate;
+
+    private static final Logger logger = LoggerFactory.getLogger(ExchangeService.class);
+
     @Cacheable(value = "rate", key = "'exchange'")
     @Retry(name = "exchange", fallbackMethod = "cacheFallback")
     public double getRate() {
-        double rate = exchangeClient.getExchange();
-        return rate;
+        return exchangeClient.getExchange();
     }
 
     @CachePut(value = "rate", key = "'exchange'")
@@ -32,14 +35,16 @@ public class ExchangeService {
         return rate;
     }
 
-    public Double cacheFallback(Throwable throwable) {
-        Cache cache = cacheManager.getCache("rate");
-        if (cache != null) {
-            Cache.ValueWrapper valueWrapper = cache.get("exchange");
-            if (valueWrapper != null) {
-                return (Double) valueWrapper.get();
+    public double cacheFallback(Throwable throwable) {
+        try {
+            String cache = redisTemplate.opsForValue().get("rate::exchange");
+            if (cache != null) {
+                return Double.parseDouble(cache);
+            } else {
+                throw new IllegalStateException("No value found in cache for 'rate::exchange'");
             }
+        } catch (Exception e) {
+            throw new IllegalStateException("Error accessing cache: " + e.getMessage(), e);
         }
-        return null;
     }
 }
