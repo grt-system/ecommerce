@@ -12,14 +12,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/sell")
 public class SellController {
 
-    @Autowired
-    private SellService sellService;
 
-    @PostMapping("/")
-    public ResponseEntity<?> createSell(@RequestParam String product, @RequestParam String user, @RequestParam boolean ft){
-        //enviar request para o store
-        //pegar valor do produto
-        //
-        return  ResponseEntity.ok().body("ok");
-    }
 }
