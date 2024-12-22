@@ -40,9 +40,10 @@ public class SellService {
 
     private static final Logger logger = LoggerFactory.getLogger(SellService.class);
 
-    public TransactionDTO createSell(long productId, long userId, boolean ft) throws JsonProcessingException {
+    public TransactionDTO createSell(long productId, long userId, boolean ft) {
         if(ft) {
             ProductDTO product = storeService.productDetails(productId); // Detalhes do produto
+            System.out.println("---------DETAR------------"  + product.getValue());
             double total = conversion(product.getValue());  // Pegar cotação
             TransactionDTO transactionDTO = storeService.processSell(productId); // Processar compra
             fidelityService.processBonus(userId, total); // Processa bonus

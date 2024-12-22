@@ -24,7 +24,8 @@ public class ExchangeService {
     @Autowired
     private CacheManager cacheManager;
 
-    @Autowired private RedisTemplate<String, String> redisTemplate;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     private static final Logger logger = LoggerFactory.getLogger(ExchangeService.class);
 
