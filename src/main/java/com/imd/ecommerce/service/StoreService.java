@@ -7,6 +7,7 @@ import io.github.resilience4j.retry.annotation.Retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 
@@ -15,18 +16,23 @@ import org.springframework.stereotype.Service;
 public class StoreService {
 
     @Autowired
-    private Store store;
+    private Store storeClient;
 
     private static final Logger logger = LoggerFactory.getLogger(StoreService.class);
 
     @Retry(name = "store", fallbackMethod = "productFallback")
+    @Cacheable(value = "products", key = "#id")
     public ProductDTO productDetails(long id) {
-        return store.getProduct(id);
+        return storeClient.getProduct(id);
     }
 
     @Retry(name = "store", fallbackMethod = "transactionFallback")
-    public long processSell(long id) {
-        return store.createSell(id);
+    public TransactionDTO processSell(long id) {
+        try {
+            return storeClient.createSell(id);
+        } catch (Exception e) {
+            throw new RuntimeException("Falha de omissão detectada no Store.");
+        }
     }
 
     public ProductDTO productFallback(Throwable throwable) {

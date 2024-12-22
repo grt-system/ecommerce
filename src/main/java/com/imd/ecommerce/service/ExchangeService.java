@@ -1,6 +1,10 @@
 package com.imd.ecommerce.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.imd.ecommerce.client.Exchange;
+import com.imd.ecommerce.dto.ExchangeDTO;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,24 +28,21 @@ public class ExchangeService {
 
     private static final Logger logger = LoggerFactory.getLogger(ExchangeService.class);
 
-    @Cacheable(value = "rate", key = "'exchange'")
     @Retry(name = "exchange", fallbackMethod = "cacheFallback")
     public double getRate() {
-        return exchangeClient.getExchange();
-    }
+        ExchangeDTO exchange = exchangeClient.getExchange();
+        redisTemplate.opsForValue().set("exchange", Double.toString(exchange.getRate()));
 
-    @CachePut(value = "rate", key = "'exchange'")
-    public double saveCache(double rate) {
-        return rate;
+        return exchange.getRate();
     }
 
     public double cacheFallback(Throwable throwable) {
         try {
-            String cache = redisTemplate.opsForValue().get("rate::exchange");
+            String cache = redisTemplate.opsForValue().get("exchange");
             if (cache != null) {
                 return Double.parseDouble(cache);
             } else {
-                throw new IllegalStateException("No value found in cache for 'rate::exchange'");
+                throw new IllegalStateException("No value found in cache for 'exchange'");
             }
         } catch (Exception e) {
             throw new IllegalStateException("Error accessing cache: " + e.getMessage(), e);

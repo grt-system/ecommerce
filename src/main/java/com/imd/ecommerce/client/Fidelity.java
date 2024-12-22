@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface Fidelity {
 
     @PostMapping("/bonus")
-    ResponseEntity<?> sendBonus(@RequestParam("user") long user , @RequestParam("product") double bonus);
+    ResponseEntity<?> sendBonus(@RequestParam("user") long user , @RequestParam("bonus") double bonus);
 }
