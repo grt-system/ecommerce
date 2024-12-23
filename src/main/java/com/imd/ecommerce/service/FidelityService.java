@@ -24,7 +24,6 @@ public class FidelityService {
 
     private static final Logger logger = LoggerFactory.getLogger(FidelityService.class);
 
-
     @Retry(name = "fidelity", fallbackMethod = "queueFallback")
     public void processBonus(long userId, double value){
         fidelityClient.sendBonus(userId, value);
@@ -32,7 +31,7 @@ public class FidelityService {
 
     public void queueFallback(long userId, double value, Throwable t) {
         FidelityDTO request = new FidelityDTO(userId, value);
-        logger.error("Failed to process bonuses for user {}, reprocessing in the background", userId, t);
+        logger.error("Failed to process bonuses for user {}, reprocessing in the background", userId);
         rabbitTemplate.convertAndSend("bonusQueue", request);
     }
 }

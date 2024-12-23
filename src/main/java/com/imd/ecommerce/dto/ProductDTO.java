@@ -11,7 +11,17 @@ public class ProductDTO {
 
     private long id;
 
-    public ProductDTO(String teste, double v) {
+    private String name;
+
+    private double value;
+
+    public ProductDTO(long id, double value, String name) {
+        this.id = id;
+        this.value = value;
+        this.name = name;
+    }
+
+    public ProductDTO() {
     }
 
     public long getId() {
@@ -37,7 +47,4 @@ public class ProductDTO {
     public void setValue(double value) {
         this.value = value;
     }
-
-    private String name;
-    private double value;
 }

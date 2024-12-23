@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
+
 @RestController
 @RequestMapping("/ecommerce")
 public class EcommerceController {
@@ -25,7 +27,7 @@ public class EcommerceController {
     public ResponseEntity<?> createSell(@RequestParam long product, @RequestParam long user, @RequestParam boolean ft){
        try {
            TransactionDTO transactionDTO = sellService.createSell(product, user, ft);
-           return ResponseEntity.ok().body("ok");
+           return ResponseEntity.ok().body(transactionDTO);
        } catch (Exception e) {
            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Create sell process failed: " + e.getMessage());
        }
