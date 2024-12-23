@@ -6,6 +6,7 @@ import com.imd.ecommerce.dto.FidelityDTO;
 import com.imd.ecommerce.service.FidelityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class FidelityConsumer {
-
 
     @Autowired
     private Fidelity fidelityClient;
@@ -29,6 +29,7 @@ public class FidelityConsumer {
             fidelityClient.sendBonus(request.getUserId(), request.getBonus());
         } catch (Exception e) {
             logger.error("Erro ao processar bônus, reencaminhando...", e);
+            throw new AmqpRejectAndDontRequeueException("Erro ao processar bônus, mensagem movida para DLQ", e);
         }
     }
 }
