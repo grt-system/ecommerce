@@ -4,27 +4,51 @@ services:
   grt-sys-ecommerce:
     image: ecommerce
     environment:
-      - DB_HOST=db                  # Hostname do banco (nome do serviço MySQL)
-      - DB_USER=ecommerce_user      # Usuário do banco
-      - DB_PASSWORD=ecommerce_password  # Senha do usuário
-      - DB_NAME=ecommerce_db        # Nome do banco de dados
+      - DB_HOST=db
+      - DB_USER=ecommerce_user
+      - DB_PASSWORD=ecommerce_password
+      - DB_NAME=ecommerce_db
+      - REDIS_HOST=redis
+      - RABBITMQ_HOST=rabbitmq
     depends_on:
       - db
+      - redis
+      - rabbitmq
     ports:
       - "8080:80"
+    command: /wait-for-it.sh db:3306 -- /wait-for-it.sh redis:6379 -- /wait-for-it.sh rabbitmq:5672 -- java -jar /app/ecommerce.jar  # Esperar pelo banco de dados, Redis e RabbitMQ
 
   db:
     image: mysql:8.0
     container_name: ecommerce-db
     environment:
-      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_ROOT_PASSWORD: ecommerce_password
       MYSQL_DATABASE: ecommerce_db
       MYSQL_USER: ecommerce_user
       MYSQL_PASSWORD: ecommerce_password
     ports:
-      - "3308:3306"
+      - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
 
+  redis:
+    image: redis:latest
+    container_name: ecommerce-redis
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: ecommerce-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
 volumes:
   db_data:
+  rabbitmq_data:
