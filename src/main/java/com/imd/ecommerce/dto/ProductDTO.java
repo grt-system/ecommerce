@@ -21,8 +21,6 @@ public class ProductDTO {
         this.name = name;
     }
 
-    public ProductDTO() {
-    }
 
     public long getId() {
         return id;
