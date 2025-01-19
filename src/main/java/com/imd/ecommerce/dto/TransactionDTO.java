@@ -11,11 +11,11 @@ public class TransactionDTO {
 
     private long transactionId;
 
-    public long getTransactionIdId() {
+    public long getTransactionId() {
         return transactionId;
     }
 
-    public void setTransactionIdId(long transactionId) {
+    public void setTransactionId(long transactionId) {
         this.transactionId = transactionId;
     }
 }

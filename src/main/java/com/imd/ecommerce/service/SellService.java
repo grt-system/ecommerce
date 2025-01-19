@@ -58,7 +58,7 @@ public class SellService {
             ProductDTO product = storeClient.getProduct(productId); // Detalhes do produto
             ExchangeDTO exchange = exchangeClient.getExchange(); // Pegar cotação
             TransactionDTO transactionDTO = storeClient.createSell(productId); // Processar compra
-            double total = exchange.getRate() * 4;
+            double total = exchange.getRate() * product.getValue();;
             fidelityClient.sendBonus(userId, total); // Criar bonus
 
             return transactionDTO;
