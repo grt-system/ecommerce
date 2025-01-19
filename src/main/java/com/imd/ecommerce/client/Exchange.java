@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 @FeignClient(name = "exchange", url = "${exchange.url}")
 public interface Exchange {
 
-    @GetMapping("/")
+    @GetMapping()
     ExchangeDTO getExchange() throws FeignException;
 }
