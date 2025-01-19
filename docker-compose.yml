@@ -15,7 +15,7 @@ services:
       - redis
       - rabbitmq
     ports:
-      - "8080:80"
+      - "8087:8087"
     command: /wait-for-it.sh db:3306 -- /wait-for-it.sh redis:6379 -- /wait-for-it.sh rabbitmq:5672 -- java -jar /app/ecommerce.jar  # Esperar pelo banco de dados, Redis e RabbitMQ
 
   db:
