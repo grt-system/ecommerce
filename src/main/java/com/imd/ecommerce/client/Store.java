@@ -15,5 +15,5 @@ public interface Store {
     ProductDTO getProduct(@PathVariable("productId") long productId);
 
     @PostMapping("/sell")
-    TransactionDTO createSell(@RequestParam("id") long id);
+    TransactionDTO createSell(@RequestParam("productId") long productId);
 }
