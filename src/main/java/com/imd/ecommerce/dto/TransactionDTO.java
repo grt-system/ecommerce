@@ -9,13 +9,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TransactionDTO {
 
-    private long id;
+    private long transactionId;
 
-    public long getId() {
-        return id;
+    public long getTransactionId() {
+        return transactionId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setTransactionId(long transactionId) {
+        this.transactionId = transactionId;
     }
 }

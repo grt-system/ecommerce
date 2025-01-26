@@ -43,7 +43,6 @@ public class SellService {
     public TransactionDTO createSell(long productId, long userId, boolean ft) {
         if(ft) {
             ProductDTO product = storeService.productDetails(productId); // Detalhes do produto
-            System.out.println("---------DETAR------------"  + product.getValue());
             double total = conversion(product.getValue());  // Pegar cotação
             TransactionDTO transactionDTO = storeService.processSell(productId); // Processar compra
             fidelityService.processBonus(userId, total); // Processa bonus
@@ -59,7 +58,7 @@ public class SellService {
             ProductDTO product = storeClient.getProduct(productId); // Detalhes do produto
             ExchangeDTO exchange = exchangeClient.getExchange(); // Pegar cotação
             TransactionDTO transactionDTO = storeClient.createSell(productId); // Processar compra
-            double total = exchange.getRate() * product.getValue();
+            double total = exchange.getRate() * product.getValue();;
             fidelityClient.sendBonus(userId, total); // Criar bonus
 
             return transactionDTO;
